@@ -5,7 +5,7 @@ module.exports = app => {
   
 
    
-    router.get("/", pollution.findAll);
+    router.get("/", pollution.get);
   
     app.use('/api/pollution', router);
   };
