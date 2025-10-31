@@ -2,7 +2,7 @@ const { v4: uuidv4 } = require ("uuid");
 
 
 const db = require("../models");
-const Pollution = db.pollution;
+const Pollution = db.pollutions;
 const Op = db.Sequelize.Op;
 
 exports.get = (req, res) => {
