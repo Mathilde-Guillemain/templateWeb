@@ -15,7 +15,7 @@ exports.login = (req, res) => {
   // Test
   let pattern = /^[A-Za-z0-9]{1,20}$/;
   if (pattern.test(utilisateur.login) && pattern.test(utilisateur.password)) {
-     Utilisateurs.findOne({ where: { login: utilisateur.login } })
+     Utilisateurs.findOne({ where: { email: utilisateur.login } })
     .then(data => {
       if (data) {
         const user = {
@@ -45,8 +45,6 @@ exports.login = (req, res) => {
 
 // lister tous les utilisateurs
 exports.get = (req, res) => {
-  const db = require("../models");
-  const Utilisateurs = db.utilisateurs;
 
   Utilisateurs.findAll()
     .then(data => res.send(data))
