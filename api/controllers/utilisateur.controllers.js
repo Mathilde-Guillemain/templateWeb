@@ -42,3 +42,13 @@ exports.login = (req, res) => {
     });
   }
 };
+
+// lister tous les utilisateurs
+exports.get = (req, res) => {
+  const db = require("../models");
+  const Utilisateurs = db.utilisateurs;
+
+  Utilisateurs.findAll()
+    .then(data => res.send(data))
+    .catch(err => res.status(500).send({ message: err.message }));
+};
