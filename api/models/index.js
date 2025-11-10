@@ -19,5 +19,7 @@ db.Sequelize = Sequelize;
 db.sequelize = sequelize;
 
 db.pollutions = require("./pollutions.model.js")(sequelize, Sequelize);
+db.pollutions = require("./users.model.js")(sequelize, Sequelize);
+
 
 module.exports = db;
