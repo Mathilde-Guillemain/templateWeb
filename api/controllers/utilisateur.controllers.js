@@ -20,7 +20,7 @@ exports.login = (req, res) => {
       if (data) {
         const user = {
           id: data.id,
-          name: data.nom,
+          name: data.name,
           email: data.email
         };
       
