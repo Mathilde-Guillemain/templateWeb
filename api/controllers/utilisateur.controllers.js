@@ -50,7 +50,6 @@ exports.create = (req, res) => {
   }
 
   Utilisateurs.create({
-    id: uuidv4(),  // générer un id unique
     name,
     email,
     password
