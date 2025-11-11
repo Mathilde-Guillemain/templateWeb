@@ -50,6 +50,7 @@ exports.create = (req, res) => {
   }
 
   Utilisateurs.create({
+    id: uuidv4(),  // générer un id unique
     name,
     email,
     password
@@ -57,3 +58,4 @@ exports.create = (req, res) => {
     .then(user => res.status(201).send(user))
     .catch(err => res.status(500).send({ message: err.message }));
 };
+
