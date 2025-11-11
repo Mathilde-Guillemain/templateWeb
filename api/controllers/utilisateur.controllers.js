@@ -1,52 +1,59 @@
-const { v4: uuidv4 } = require ("uuid");
-
-
+const { v4: uuidv4 } = require("uuid");
 const db = require("../models");
 const Utilisateurs = db.utilisateurs;
 const Op = db.Sequelize.Op;
 
-// Find a single Utilisateur with an login
+// LOGIN (authentification)
 exports.login = (req, res) => {
-  const utilisateur = {
-    login: req.body.login,
-    password: req.body.password
-  };
+  const { email, password } = req.body;
 
-  // Test
-  let pattern = /^[A-Za-z0-9]{1,20}$/;
-  if (pattern.test(utilisateur.login) && pattern.test(utilisateur.password)) {
-     Utilisateurs.findOne({ where: { email: utilisateur.login } })
-    .then(data => {
-      if (data) {
-        const user = {
-          id: data.id,
-          name: data.name,
-          email: data.email
-        };
-      
-        res.send(data);
-      } else {
-        res.status(404).send({
-          message: `Cannot find Utilisateur with login=${utilisateur.login}.`
+  // Vérification basique
+  let pattern = /^[A-Za-z0-9@.]{1,50}$/;
+  if (pattern.test(email) && pattern.test(password)) {
+    Utilisateurs.findOne({ where: { email } })
+      .then(data => {
+        if (data) {
+          res.send({
+            id: data.id,
+            name: data.name,
+            email: data.email
+          });
+        } else {
+          res.status(404).send({
+            message: `Cannot find Utilisateur with email=${email}.`
+          });
+        }
+      })
+      .catch(err => {
+        res.status(400).send({
+          message: "Error retrieving Utilisateur with email=" + email
         });
-      }
-    })
-    .catch(err => {
-      res.status(400).send({
-        message: "Error retrieving Utilisateur with login=" + utilisateur.login
       });
-    });
   } else {
-    res.status(400).send({
-      message: "Login ou password incorrect" 
-    });
+    res.status(400).send({ message: "Email ou password incorrect" });
   }
 };
 
-// lister tous les utilisateurs
+// LISTER tous les utilisateurs
 exports.get = (req, res) => {
-
   Utilisateurs.findAll()
     .then(data => res.send(data))
+    .catch(err => res.status(500).send({ message: err.message }));
+};
+
+// CREER un utilisateur
+exports.create = (req, res) => {
+  const { name, email, password } = req.body;
+
+  if (!name || !email || !password) {
+    return res.status(400).send({ message: "Name, email et password sont requis." });
+  }
+
+  Utilisateurs.create({
+    name,
+    email,
+    password
+  })
+    .then(user => res.status(201).send(user))
     .catch(err => res.status(500).send({ message: err.message }));
 };
