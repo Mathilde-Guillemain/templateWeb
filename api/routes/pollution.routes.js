@@ -3,8 +3,11 @@ module.exports = app => {
   
     var router = require("express").Router();
   
+  router.get("/", pollution.get);
+  router.get("/:id", pollution.getOne);
+  router.post("/", pollution.create);
+  router.put("/:id", pollution.update);
+  router.delete("/:id", pollution.delete);
 
-    router.get("/", pollution.get);
-  
-    app.use('/api/pollution', router);
+  app.use('/api/pollution', router);
   };

@@ -132,3 +132,34 @@ exports.create = (req, res) => {
     .catch(err => res.status(500).send({ message: err.message }));
 };
 
+// Supprimer un utilisateur par id
+exports.delete = (req, res) => {
+  const id = req.params.id;
+
+  Utilisateurs.destroy({ where: { id } })
+    .then(affected => {
+      if (!affected) return res.status(404).send({ message: 'Utilisateur non trouvé.' });
+      res.send({ message: 'Utilisateur supprimé.' });
+    })
+    .catch(err => res.status(500).send({ message: err.message }));
+};
+
+// Mettre à jour un utilisateur
+exports.update = (req, res) => {
+  const id = req.params.id;
+  const { name, email, password } = req.body;
+
+  const updated = {};
+  if (name) updated.name = name;
+  if (email) updated.email = email;
+  if (password) updated.password = password; // note: if password provided, should hash in production
+
+  Utilisateurs.update(updated, { where: { id } })
+    .then(([affected]) => {
+      if (!affected) return res.status(404).send({ message: 'Utilisateur non trouvé.' });
+      return Utilisateurs.findByPk(id);
+    })
+    .then(user => res.send(user))
+    .catch(err => res.status(500).send({ message: err.message }));
+};
+
