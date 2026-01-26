@@ -110,6 +110,19 @@ exports.getCurrentUser = (req, res) => {
     .catch(err => res.status(500).send({ message: err.message }));
 };
 
+// Obtenir un utilisateur par id (sans le mot de passe)
+exports.getOne = (req, res) => {
+  const id = req.params.id;
+  Utilisateurs.findByPk(id, {
+    attributes: ['id', 'name', 'email']
+  })
+    .then(user => {
+      if (!user) return res.status(404).send({ message: "Utilisateur non trouvé." });
+      res.send(user);
+    })
+    .catch(err => res.status(500).send({ message: err.message }));
+};
+
 exports.get = (req, res) => {
   Utilisateurs.findAll()
     .then(data => res.send(data))

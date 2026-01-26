@@ -7,6 +7,7 @@ module.exports = app => {
   router.post("/login", utilisateur.login);                  // connexion
   router.post("/logout", authMiddleware, utilisateur.logout); // déconnexion
   router.get("/me", authMiddleware, utilisateur.getCurrentUser); // utilisateur actuel
+  router.get("/:id", utilisateur.getOne);                      // utilisateur par id (public)
   router.get("/", utilisateur.get);                           // liste tous
   router.post("/", utilisateur.create);                       // création
   router.put("/:id", utilisateur.update);                     // mise à jour

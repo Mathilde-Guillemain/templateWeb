@@ -3,11 +3,18 @@ const { v4: uuidv4 } = require ("uuid");
 
 const db = require("../models");
 const Pollution = db.pollutions;
+const Utilisateur = db.utilisateurs;
 const Op = db.Sequelize.Op;
 
 exports.get = (req, res) => {
 
-     Pollution.findAll()
+     Pollution.findAll({
+      include: [{
+        model: Utilisateur,
+        as: 'auteur',
+        attributes: ['id', 'name', 'email']
+      }]
+    })
     .then(data => {res.send(data);})
     .catch(err => {
       res.status(400).send({
@@ -21,7 +28,13 @@ exports.get = (req, res) => {
 exports.getOne = (req, res) => {
   const id = req.params.id;
 
-  Pollution.findByPk(id)
+  Pollution.findByPk(id, {
+    include: [{
+      model: Utilisateur,
+      as: 'auteur',
+      attributes: ['id', 'name', 'email']
+    }]
+  })
     .then(data => {
       if (!data) return res.status(404).send({ message: 'Pollution non trouvée.' });
       res.send(data);
@@ -37,7 +50,16 @@ exports.create = (req, res) => {
   };
 
   Pollution.create(payload)
-    .then(newItem => res.status(201).send(newItem))
+    .then(newItem =>
+      Pollution.findByPk(newItem.id, {
+        include: [{
+          model: Utilisateur,
+          as: 'auteur',
+          attributes: ['id', 'name', 'email']
+        }]
+      })
+    )
+    .then(newItemWithAuthor => res.status(201).send(newItemWithAuthor))
     .catch(err => res.status(500).send({ message: err.message }));
 };
 
@@ -49,7 +71,13 @@ exports.update = (req, res) => {
   Pollution.update(updated, { where: { id } })
     .then(([affected]) => {
       if (!affected) return res.status(404).send({ message: 'Pollution non trouvée.' });
-      return Pollution.findByPk(id);
+      return Pollution.findByPk(id, {
+        include: [{
+          model: Utilisateur,
+          as: 'auteur',
+          attributes: ['id', 'name', 'email']
+        }]
+      });
     })
     .then(item => res.send(item))
     .catch(err => res.status(500).send({ message: err.message }));
