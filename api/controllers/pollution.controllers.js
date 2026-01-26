@@ -31,7 +31,10 @@ exports.getOne = (req, res) => {
 
 // Créer une pollution
 exports.create = (req, res) => {
-  const payload = req.body;
+  const payload = {
+    ...req.body,
+    utilisateurId: req.userId // rattacher la pollution au créateur authentifié
+  };
 
   Pollution.create(payload)
     .then(newItem => res.status(201).send(newItem))
